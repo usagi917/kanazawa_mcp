@@ -8,26 +8,29 @@ import { useChatStore } from "../store/chat";
 export default function ChatInput() {
   const [value, setValue] = useState("");
   const addMessage = useChatStore((state) => state.addMessage);
+  const [loading, setLoading] = useState(false);
 
-  const handleSend = () => {
-    if (!value.trim()) return;
-    
-    // ユーザーメッセージを追加
-    addMessage({
-      role: "user",
-      content: value.trim(),
-    });
+  const handleSend = async () => {
+    if (!value.trim() || loading) return;
 
-    // TODO: APIを呼び出して応答を取得
-    // 仮の応答を追加
-    setTimeout(() => {
-      addMessage({
-        role: "assistant",
-        content: "ご質問ありがとうございます！\n現在、APIの実装中です。\nもうしばらくお待ちください。",
-      });
-    }, 1000);
-
+    const message = value.trim();
+    addMessage({ role: "user", content: message });
     setValue("");
+    setLoading(true);
+
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/chat`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ query: message }),
+      });
+      const data = await res.json();
+      addMessage({ role: "assistant", content: data.answer });
+    } catch (e) {
+      addMessage({ role: "assistant", content: "エラーが発生しました" });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -50,7 +53,7 @@ export default function ChatInput() {
         size="lg"
         borderRadius="full"
         type="submit"
-        isDisabled={!value.trim()}
+        isDisabled={!value.trim() || loading}
       />
     </Flex>
   );
