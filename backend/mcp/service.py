@@ -1,11 +1,20 @@
 from typing import Any, Dict, List
 from .tools import MCP_TOOLS, GarbageScheduleInput, TouristSpotInput, TransportationInput
 from cache import get_cache, set_cache
+from database import SessionLocal
+from models import GarbageSchedule, TouristSpot, TransportationStop
+from sqlalchemy import select
+from sqlalchemy.orm import Session
+from datetime import datetime
 import json
 
 class MCPService:
     def __init__(self):
         self.tools = {tool["name"]: tool for tool in MCP_TOOLS}
+
+    def _get_db(self) -> Session:
+        """Create a new DB session"""
+        return SessionLocal()
 
     def get_tools(self) -> List[Dict[str, Any]]:
         """利用可能なツールの一覧を返す"""
@@ -36,37 +45,67 @@ class MCPService:
         """実際のツール実行ロジック"""
         if tool_name == "get_garbage_schedule":
             input_data = GarbageScheduleInput(**params)
-            # TODO: 実際のデータベースクエリを実装
-            return {
-                "garbage_types": ["燃えるごみ", "資源ごみ"],
-                "area_code": input_data.area_code,
-                "date": input_data.date
-            }
-        
+            db = self._get_db()
+            try:
+                date_obj = datetime.strptime(input_data.date, "%Y-%m-%d").date()
+                stmt = (
+                    select(GarbageSchedule)
+                    .where(GarbageSchedule.area_code == input_data.area_code)
+                    .where(GarbageSchedule.date == date_obj)
+                )
+                schedules = db.scalars(stmt).all()
+                garbage_types = [s.garbage_type for s in schedules]
+                return {
+                    "garbage_types": garbage_types,
+                    "area_code": input_data.area_code,
+                    "date": input_data.date,
+                }
+            finally:
+                db.close()
+
         elif tool_name == "search_tourist_spots":
             input_data = TouristSpotInput(**params)
-            # TODO: 実際の観光スポット検索を実装
-            return {
-                "spots": [
-                    {
-                        "name": "兼六園",
-                        "description": "日本三名園の一つ",
-                        "location": {"lat": 36.5621, "lng": 136.6625}
-                    }
-                ]
-            }
-        
+            db = self._get_db()
+            try:
+                keyword = f"%{input_data.keyword}%"
+                stmt = (
+                    select(TouristSpot)
+                    .where(TouristSpot.name.like(keyword) | TouristSpot.description.like(keyword))
+                    .limit(input_data.limit)
+                )
+                spots = db.scalars(stmt).all()
+                return {
+                    "spots": [
+                        {
+                            "name": s.name,
+                            "description": s.description,
+                            "location": {"lat": s.latitude, "lng": s.longitude},
+                            "address": s.address,
+                        }
+                        for s in spots
+                    ]
+                }
+            finally:
+                db.close()
+
         elif tool_name == "get_transportation_info":
             input_data = TransportationInput(**params)
-            # TODO: 実際の交通情報取得を実装
-            return {
-                "stops": [
-                    {
-                        "name": "金沢駅",
-                        "type": "train_station",
-                        "location": {"lat": 36.5781, "lng": 136.6567}
-                    }
-                ]
-            }
+            db = self._get_db()
+            try:
+                stmt = select(TransportationStop).where(TransportationStop.type == input_data.type)
+                stops = db.scalars(stmt).all()
+                return {
+                    "stops": [
+                        {
+                            "name": s.name,
+                            "type": s.type,
+                            "location": {"lat": s.latitude, "lng": s.longitude},
+                            "address": s.address,
+                        }
+                        for s in stops
+                    ]
+                }
+            finally:
+                db.close()
         
         raise ValueError(f"Tool execution not implemented: {tool_name}") 

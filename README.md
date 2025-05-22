@@ -30,12 +30,18 @@ cp .env.example .env
 # .envファイルを編集して必要な環境変数を設定
 ```
 
-3. Docker Composeで起動
+3. オープンデータの取得とインポート
+```bash
+docker compose run --rm backend python scripts/fetch_opendata.py
+docker compose run --rm backend python scripts/import_data.py
+```
+
+4. Docker Composeで起動
 ```bash
 docker-compose up --build
 ```
 
-4. ブラウザでアクセス
+5. ブラウザでアクセス
 ```
 http://localhost:3000
 ```
