@@ -1,6 +1,7 @@
-from sqlalchemy import Column, Integer, String, Float, Date, ForeignKey, JSON
+from sqlalchemy import Column, Integer, String, Float, Date, ForeignKey, JSON, DateTime, Text
 from sqlalchemy.orm import relationship
-from .database import Base
+from datetime import datetime
+from database import Base
 
 class GarbageSchedule(Base):
     __tablename__ = "garbage_schedules"
@@ -34,3 +35,13 @@ class TransportationStop(Base):
     longitude = Column(Float)
     address = Column(String)
     routes = Column(JSON, nullable=True)  # バス路線や電車路線の情報 
+
+class ChatHistory(Base):
+    __tablename__ = "chat_history"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    session_id = Column(String, index=True)  # ユーザーセッションを識別
+    message = Column(Text)  # ユーザーのメッセージ
+    response = Column(Text)  # AIの応答
+    timestamp = Column(DateTime, default=datetime.utcnow)
+    is_user_message = Column(Integer, default=1)  # 1: ユーザー, 0: AI 

@@ -3,12 +3,20 @@ import { ChatMessage } from "../types/chat";
 
 interface ChatState {
   messages: ChatMessage[];
+  sessionId: string | null;
   addMessage: (message: Omit<ChatMessage, "id" | "timestamp">) => void;
   clearMessages: () => void;
+  initializeSession: () => void;
 }
 
-export const useChatStore = create<ChatState>((set) => ({
+// セッションIDを生成する関数
+const generateSessionId = () => {
+  return crypto.randomUUID();
+};
+
+export const useChatStore = create<ChatState>((set, get) => ({
   messages: [],
+  sessionId: null,
   addMessage: (message) =>
     set((state) => ({
       messages: [
@@ -21,4 +29,10 @@ export const useChatStore = create<ChatState>((set) => ({
       ],
     })),
   clearMessages: () => set({ messages: [] }),
+  initializeSession: () => {
+    const state = get();
+    if (!state.sessionId) {
+      set({ sessionId: generateSessionId() });
+    }
+  },
 })); 

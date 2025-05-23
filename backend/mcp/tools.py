@@ -13,6 +13,12 @@ class TransportationInput(BaseModel):
     type: str  # bus_stop, train_station, etc.
     filter: Optional[dict] = None
 
+class BusScheduleInput(BaseModel):
+    time_range: Optional[str] = None  # "15:00-16:00" などの時間帯
+    route_name: Optional[str] = None  # 路線名
+    stop_name: Optional[str] = None   # 停留所名
+    limit: int = 10
+
 # MCPツール定義
 MCP_TOOLS = [
     {
@@ -29,5 +35,10 @@ MCP_TOOLS = [
         "name": "get_transportation_info",
         "description": "交通情報を取得（バス停、駅など）",
         "input_schema": TransportationInput.model_json_schema(),
+    },
+    {
+        "name": "get_bus_schedule",
+        "description": "バス時刻表を検索（時間帯、路線、停留所で絞り込み可能）",
+        "input_schema": BusScheduleInput.model_json_schema(),
     }
 ] 
