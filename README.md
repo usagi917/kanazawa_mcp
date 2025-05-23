@@ -222,6 +222,17 @@ kanazawa_mcp/
 - `GET /mcp/tools` - 利用可能なツール一覧
 - `POST /mcp/execute` - MCPツールの実行
 
+開発時には `backend/scripts/mcp_cli.py` を使うと、コマンドラインから簡単に
+MCP API を試せます。
+
+```bash
+# ツール一覧取得
+python scripts/mcp_cli.py tools
+
+# ツール実行例
+python scripts/mcp_cli.py execute get_garbage_schedule '{"area_code":"A01","date":"2024-05-01"}'
+```
+
 ### レスポンス形式
 
 オープンデータ統合により、レスポンスに`data_source`フィールドが追加されました：
