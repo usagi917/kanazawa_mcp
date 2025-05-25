@@ -1,19 +1,20 @@
 "use client";
 import React from "react";
-import { 
-  Box, 
-  Text, 
-  Flex, 
-  Avatar, 
+import {
+  Box,
+  Text,
+  Flex,
+  Avatar,
   VStack,
   HStack,
   IconButton,
   useClipboard,
-  useToast
+  useToast,
 } from "@chakra-ui/react";
 import { motion } from "framer-motion";
 import { ChatMessage as ChatMessageType } from "../types/chat";
 import { FiUser, FiMessageSquare, FiCopy, FiCheck } from "react-icons/fi";
+import { formatTime } from "../utils/time";
 
 const MotionBox = motion(Box);
 
@@ -34,14 +35,6 @@ export default function ChatMessage({ message }: ChatMessageProps) {
       duration: 2000,
       isClosable: true,
       position: "top",
-      size: "sm",
-    });
-  };
-
-  const formatTime = (date: Date) => {
-    return date.toLocaleTimeString('ja-JP', {
-      hour: '2-digit',
-      minute: '2-digit'
     });
   };
 
@@ -52,11 +45,11 @@ export default function ChatMessage({ message }: ChatMessageProps) {
       transition={{ duration: 0.3 }}
       mb={4}
       role="article"
-      aria-label={`${isUser ? 'ユーザー' : 'アシスタント'}のメッセージ`}
+      aria-label={`${isUser ? "ユーザー" : "アシスタント"}のメッセージ`}
     >
-      <Flex 
-        gap={3} 
-        align="flex-start" 
+      <Flex
+        gap={3}
+        align="flex-start"
         justify={isUser ? "flex-end" : "flex-start"}
         direction={isUser ? "row-reverse" : "row"}
       >
@@ -70,8 +63,8 @@ export default function ChatMessage({ message }: ChatMessageProps) {
         />
 
         {/* メッセージコンテンツ */}
-        <VStack 
-          align={isUser ? "flex-end" : "flex-start"} 
+        <VStack
+          align={isUser ? "flex-end" : "flex-start"}
           spacing={1}
           maxW="80%"
         >
@@ -92,21 +85,21 @@ export default function ChatMessage({ message }: ChatMessageProps) {
               height: 0,
               borderTop: "8px solid transparent",
               borderBottom: "8px solid transparent",
-              [isUser ? "borderLeft" : "borderRight"]: isUser 
-                ? "8px solid" 
+              [isUser ? "borderLeft" : "borderRight"]: isUser
+                ? "8px solid"
                 : "8px solid",
-              [isUser ? "borderLeftColor" : "borderRightColor"]: isUser 
-                ? "pink.500" 
+              [isUser ? "borderLeftColor" : "borderRightColor"]: isUser
+                ? "pink.500"
                 : "whiteAlpha.900",
             }}
             transition="all 0.2s"
             _hover={{
               transform: "translateY(-1px)",
-              boxShadow: "lg"
+              boxShadow: "lg",
             }}
           >
-            <Text 
-              fontSize="md" 
+            <Text
+              fontSize="md"
               whiteSpace="pre-wrap"
               lineHeight="1.6"
               wordBreak="break-word"
@@ -117,14 +110,10 @@ export default function ChatMessage({ message }: ChatMessageProps) {
 
           {/* タイムスタンプとアクション */}
           <HStack spacing={2} justify={isUser ? "flex-end" : "flex-start"}>
-            <Text 
-              fontSize="xs" 
-              color="whiteAlpha.600"
-              fontWeight="500"
-            >
+            <Text fontSize="xs" color="whiteAlpha.600" fontWeight="500">
               {formatTime(message.timestamp)}
             </Text>
-            
+
             {/* コピーボタン */}
             <IconButton
               aria-label="メッセージをコピー"
@@ -132,9 +121,9 @@ export default function ChatMessage({ message }: ChatMessageProps) {
               size="xs"
               variant="ghost"
               color="whiteAlpha.600"
-              _hover={{ 
+              _hover={{
                 color: "whiteAlpha.800",
-                bg: "whiteAlpha.100"
+                bg: "whiteAlpha.100",
               }}
               onClick={handleCopy}
             />
@@ -143,4 +132,4 @@ export default function ChatMessage({ message }: ChatMessageProps) {
       </Flex>
     </MotionBox>
   );
-} 
+}

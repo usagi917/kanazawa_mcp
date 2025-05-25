@@ -87,7 +87,7 @@ async def chat(request: ChatRequest):
         
         # GPTに質問を送信
         response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",
+            model="gpt-4.1-nano",
             messages=[
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": request.message}

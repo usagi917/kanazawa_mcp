@@ -241,7 +241,7 @@ async def chat(request: ChatRequest, db: Session = Depends(SessionDep)):
         messages.append({"role": "user", "content": query})
 
         response = openai_client.chat.completions.create(
-            model=os.getenv("OPENAI_MODEL", "gpt-3.5-turbo"),
+            model=os.getenv("OPENAI_MODEL", "gpt-4.1-nano"),
             messages=messages,
             temperature=0.3,
             max_tokens=800,
