@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>金沢AI助手</title>
+    <meta name="description" content="金沢市のオープンデータを活用したAI助手">
+    
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏯</text></svg>">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-light: #818cf8;
+            --primary-dark: #4f46e5;
+            --secondary: #f1f5f9;
+            --accent: #06b6d4;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+            
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-tertiary: #334155;
+            --bg-glass: rgba(255, 255, 255, 0.1);
+            --bg-glass-hover: rgba(255, 255, 255, 0.15);
+            
+            --text-primary: #f8fafc;
+            --text-secondary: #cbd5e1;
+            --text-muted: #64748b;
+            
+            --border: rgba(255, 255, 255, 0.1);
+            --border-hover: rgba(255, 255, 255, 0.2);
+            
+            --shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            
+            --radius: 1rem;
+            --radius-lg: 1.5rem;
+            --radius-xl: 2rem;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+            min-height: 100vh;
+            color: var(--text-primary);
+            overflow-x: hidden;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(139, 92, 246, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(6, 182, 212, 0.15) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+        
+        /* ヘッダー */
+        .header {
+            text-align: center;
+            padding: 2rem 0;
+        }
+        
+        .logo {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+        }
+        
+        .title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #fff 0%, #e2e8f0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.02em;
+        }
+        
+        .subtitle {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            font-weight: 400;
+            opacity: 0.9;
+        }
+        
+        /* チャットコンテナ */
+        .chat-container {
+            flex: 1;
+            background: var(--bg-glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            min-height: 600px;
+        }
+        
+        .chat-header {
+            padding: 1.5rem 2rem;
+            background: var(--bg-glass);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .chat-header-icon {
+            width: 2rem;
+            height: 2rem;
+            background: var(--primary);
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+        
+        .chat-header-text h2 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+        
+        .chat-header-text p {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+        
+        .chat-messages {
+            flex: 1;
+            padding: 1.5rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .chat-messages::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .chat-messages::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        
+        .chat-messages::-webkit-scrollbar-thumb {
+            background: var(--bg-glass);
+            border-radius: 3px;
+        }
+        
+        /* メッセージ */
+        .message {
+            display: flex;
+            gap: 0.75rem;
+            animation: slideUp 0.3s ease-out;
+        }
+        
+        .message.user {
+            flex-direction: row-reverse;
+        }
+        
+        .message-avatar {
+            width: 2rem;
+            height: 2rem;
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 0.875rem;
+        }
+        
+        .message.user .message-avatar {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .message.assistant .message-avatar {
+            background: var(--bg-glass);
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+        }
+        
+        .message-content {
+            max-width: 70%;
+            padding: 1rem 1.25rem;
+            border-radius: var(--radius);
+            font-size: 0.9rem;
+            line-height: 1.6;
+            word-wrap: break-word;
+        }
+        
+        .message.user .message-content {
+            background: var(--primary);
+            color: white;
+            border-bottom-right-radius: 0.25rem;
+        }
+        
+        .message.assistant .message-content {
+            background: var(--bg-glass);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            border-bottom-left-radius: 0.25rem;
+        }
+        
+        /* ウェルカムメッセージ */
+        .welcome {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: var(--text-secondary);
+        }
+        
+        .welcome h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .welcome p {
+            margin-bottom: 2rem;
+            opacity: 0.8;
+        }
+        
+        .examples {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        
+        .example {
+            background: var(--bg-glass);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: left;
+        }
+        
+        .example:hover {
+            background: var(--bg-glass-hover);
+            border-color: var(--border-hover);
+            transform: translateY(-2px);
+        }
+        
+        .example-icon {
+            margin-bottom: 0.5rem;
+            color: var(--primary-light);
+        }
+        
+        .example-text {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+        
+        /* 入力エリア */
+        .chat-input {
+            padding: 1.5rem;
+            background: var(--bg-glass);
+            border-top: 1px solid var(--border);
+        }
+        
+        .input-group {
+            display: flex;
+            gap: 0.75rem;
+            align-items: flex-end;
+        }
+        
+        .input-wrapper {
+            flex: 1;
+            position: relative;
+        }
+        
+        .chat-textarea {
+            width: 100%;
+            min-height: 50px;
+            max-height: 120px;
+            padding: 0.875rem 1rem;
+            background: var(--bg-glass);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 0.9rem;
+            resize: none;
+            transition: all 0.2s ease;
+        }
+        
+        .chat-textarea::placeholder {
+            color: var(--text-muted);
+        }
+        
+        .chat-textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: var(--bg-glass-hover);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+        
+        .send-button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            padding: 0.875rem 1.5rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            min-width: 100px;
+            justify-content: center;
+        }
+        
+        .send-button:hover:not(:disabled) {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .send-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        /* ローディング */
+        .loading {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-secondary);
+        }
+        
+        .loading-dots {
+            display: flex;
+            gap: 0.25rem;
+        }
+        
+        .loading-dot {
+            width: 4px;
+            height: 4px;
+            background: var(--primary);
+            border-radius: 50%;
+            animation: pulse 1.4s infinite ease-in-out;
+        }
+        
+        .loading-dot:nth-child(1) { animation-delay: -0.32s; }
+        .loading-dot:nth-child(2) { animation-delay: -0.16s; }
+        
+        /* アニメーション */
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes pulse {
+            0%, 80%, 100% {
+                transform: scale(0);
+                opacity: 0.5;
+            }
+            40% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+        
+        /* レスポンシブ */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0.5rem;
+                gap: 1rem;
+            }
+            
+            .header {
+                padding: 1rem 0;
+            }
+            
+            .title {
+                font-size: 1.75rem;
+            }
+            
+            .logo {
+                font-size: 2.5rem;
+            }
+            
+            .subtitle {
+                font-size: 1rem;
+            }
+            
+            .chat-container {
+                min-height: calc(100vh - 200px);
+                border-radius: var(--radius-lg);
+            }
+            
+            .chat-header {
+                padding: 1rem 1.5rem;
+            }
+            
+            .chat-messages {
+                padding: 1rem;
+            }
+            
+            .message-content {
+                max-width: 85%;
+                padding: 0.875rem 1rem;
+                font-size: 0.875rem;
+            }
+            
+            .chat-input {
+                padding: 1rem;
+                position: sticky;
+                bottom: 0;
+                background: var(--bg-glass);
+                backdrop-filter: blur(20px);
+            }
+            
+            .input-group {
+                gap: 0.5rem;
+            }
+            
+            .chat-textarea {
+                font-size: 16px; /* iOS zoom防止 */
+                padding: 1rem;
+                min-height: 44px; /* タッチターゲット最小サイズ */
+            }
+            
+            .send-button {
+                min-height: 44px; /* タッチターゲット最小サイズ */
+                min-width: 44px;
+                padding: 0.75rem;
+                border-radius: 50%;
+            }
+            
+            .send-button span {
+                display: none; /* モバイルでは「送信」テキストを非表示 */
+            }
+            
+            .examples {
+                grid-template-columns: 1fr;
+                gap: 0.75rem;
+            }
+            
+            .example {
+                padding: 1rem;
+                border-radius: var(--radius);
+            }
+            
+            .example-text {
+                font-size: 0.875rem;
+            }
+            
+            .welcome {
+                padding: 2rem 1rem;
+            }
+            
+            .welcome h3 {
+                font-size: 1.25rem;
+            }
+            
+            .welcome p {
+                font-size: 0.9rem;
+            }
+        }
+        
+        /* 小さなスマホ向け */
+        @media (max-width: 480px) {
+            .container {
+                padding: 0.25rem;
+            }
+            
+            .header {
+                padding: 0.5rem 0;
+            }
+            
+            .title {
+                font-size: 1.5rem;
+            }
+            
+            .logo {
+                font-size: 2rem;
+            }
+            
+            .chat-container {
+                min-height: calc(100vh - 150px);
+                border-radius: var(--radius);
+            }
+            
+            .chat-header {
+                padding: 0.75rem 1rem;
+            }
+            
+            .chat-header-text h2 {
+                font-size: 1rem;
+            }
+            
+            .chat-header-text p {
+                font-size: 0.75rem;
+            }
+            
+            .message-content {
+                max-width: 90%;
+                padding: 0.75rem;
+                font-size: 0.8rem;
+            }
+            
+            .welcome {
+                padding: 1.5rem 0.5rem;
+            }
+            
+            .welcome h3 {
+                font-size: 1.125rem;
+            }
+        }
+        
+        /* タッチデバイス向けの改善 */
+        @media (hover: none) and (pointer: coarse) {
+            .example:hover {
+                background: var(--bg-glass); /* ホバー効果を無効化 */
+                border-color: var(--border);
+                transform: none;
+            }
+            
+            .example:active {
+                background: var(--bg-glass-hover);
+                border-color: var(--border-hover);
+                transform: scale(0.98);
+            }
+            
+            .send-button:hover {
+                background: var(--primary);
+                transform: none;
+                box-shadow: none;
+            }
+            
+            .send-button:active {
+                background: var(--primary-dark);
+                transform: scale(0.95);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- ヘッダー -->
+        <header class="header">
+            <div class="logo">🏯</div>
+            <h1 class="title">金沢AI助手</h1>
+            <p class="subtitle">金沢市のオープンデータを活用したAI助手</p>
+        </header>
+        
+        <!-- チャットコンテナ -->
+        <main class="chat-container">
+            <div class="chat-header">
+                <div class="chat-header-icon">
+                    <i data-lucide="bot"></i>
+                </div>
+                <div class="chat-header-text">
+                    <h2>AI助手</h2>
+                    <p>金沢市について何でもお聞きください</p>
+                </div>
+            </div>
+            
+            <div class="chat-messages" id="chatMessages">
+                <div class="welcome">
+                    <h3>👋 こんにちは！</h3>
+                    <p>金沢市のオープンデータを活用して、観光情報や行政サービス、統計データなど様々な質問にお答えします。</p>
+                    
+                    <div class="examples">
+                        <div class="example" onclick="sendExample('金沢市の人口は？')">
+                            <div class="example-icon">
+                                <i data-lucide="users"></i>
+                            </div>
+                            <div class="example-text">金沢市の人口は？</div>
+                        </div>
+                        <div class="example" onclick="sendExample('おすすめの観光スポットを教えて')">
+                            <div class="example-icon">
+                                <i data-lucide="map-pin"></i>
+                            </div>
+                            <div class="example-text">おすすめの観光スポット</div>
+                        </div>
+                        <div class="example" onclick="sendExample('金沢市の公園一覧')">
+                            <div class="example-icon">
+                                <i data-lucide="trees"></i>
+                            </div>
+                            <div class="example-text">金沢市の公園一覧</div>
+                        </div>
+                        <div class="example" onclick="sendExample('ゴミの出し方について')">
+                            <div class="example-icon">
+                                <i data-lucide="recycle"></i>
+                            </div>
+                            <div class="example-text">ゴミの出し方について</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="chat-input">
+                <div class="input-group">
+                    <div class="input-wrapper">
+                        <textarea 
+                            id="messageInput" 
+                            class="chat-textarea" 
+                            placeholder="金沢市について質問してください... (Ctrl+Enterで送信)"
+                            rows="1"
+                        ></textarea>
+                    </div>
+                    <button id="sendButton" class="send-button">
+                        <i data-lucide="send"></i>
+                        <span>送信</span>
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <script>
+        // Lucide icons初期化
+        lucide.createIcons();
+        
+        class KanazawaAIChat {
+            constructor() {
+                this.messagesContainer = document.getElementById('chatMessages');
+                this.messageInput = document.getElementById('messageInput');
+                this.sendButton = document.getElementById('sendButton');
+                this.isLoading = false;
+                
+                this.initializeEventListeners();
+                this.adjustTextareaHeight();
+            }
+            
+            initializeEventListeners() {
+                this.sendButton.addEventListener('click', () => this.sendMessage());
+                
+                this.messageInput.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+                        e.preventDefault();
+                        this.sendMessage();
+                    }
+                });
+                
+                this.messageInput.addEventListener('input', () => this.adjustTextareaHeight());
+            }
+            
+            adjustTextareaHeight() {
+                const textarea = this.messageInput;
+                textarea.style.height = 'auto';
+                textarea.style.height = Math.min(textarea.scrollHeight, 120) + 'px';
+            }
+            
+            async sendMessage() {
+                const message = this.messageInput.value.trim();
+                if (!message || this.isLoading) return;
+                
+                this.addMessage(message, 'user');
+                this.messageInput.value = '';
+                this.adjustTextareaHeight();
+                
+                this.setLoading(true);
+                const loadingMessage = this.addLoadingMessage();
+                
+                try {
+                    const response = await fetch('/api/chat', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ message: message })
+                    });
+                    
+                    const data = await response.json();
+                    loadingMessage.remove();
+                    
+                    if (data.success) {
+                        this.addMessage(data.response, 'assistant');
+                        
+                        if (data.datasets_used > 0) {
+                            this.addDatasetInfo(data.datasets_used);
+                        }
+                    } else {
+                        this.addMessage(data.response || 'エラーが発生しました', 'assistant');
+                    }
+                    
+                } catch (error) {
+                    console.error('API呼び出しエラー:', error);
+                    loadingMessage.remove();
+                    this.addMessage('申し訳ございません。接続エラーが発生しました。', 'assistant');
+                } finally {
+                    this.setLoading(false);
+                }
+            }
+            
+            addMessage(content, sender) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `message ${sender}`;
+                
+                const avatarDiv = document.createElement('div');
+                avatarDiv.className = 'message-avatar';
+                avatarDiv.innerHTML = sender === 'user' ? 
+                    '<i data-lucide="user"></i>' : 
+                    '<i data-lucide="bot"></i>';
+                
+                const contentDiv = document.createElement('div');
+                contentDiv.className = 'message-content';
+                contentDiv.textContent = content;
+                
+                messageDiv.appendChild(avatarDiv);
+                messageDiv.appendChild(contentDiv);
+                
+                const welcomeMessage = this.messagesContainer.querySelector('.welcome');
+                if (welcomeMessage) {
+                    welcomeMessage.remove();
+                }
+                
+                this.messagesContainer.appendChild(messageDiv);
+                lucide.createIcons();
+                this.scrollToBottom();
+                
+                return messageDiv;
+            }
+            
+            addLoadingMessage() {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = 'message assistant';
+                
+                const avatarDiv = document.createElement('div');
+                avatarDiv.className = 'message-avatar';
+                avatarDiv.innerHTML = '<i data-lucide="bot"></i>';
+                
+                const contentDiv = document.createElement('div');
+                contentDiv.className = 'message-content loading';
+                contentDiv.innerHTML = `
+                    <i data-lucide="brain-circuit"></i>
+                    考え中です
+                    <div class="loading-dots">
+                        <div class="loading-dot"></div>
+                        <div class="loading-dot"></div>
+                        <div class="loading-dot"></div>
+                    </div>
+                `;
+                
+                messageDiv.appendChild(avatarDiv);
+                messageDiv.appendChild(contentDiv);
+                this.messagesContainer.appendChild(messageDiv);
+                lucide.createIcons();
+                this.scrollToBottom();
+                
+                return messageDiv;
+            }
+            
+            addDatasetInfo(count) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = 'message assistant';
+                
+                const avatarDiv = document.createElement('div');
+                avatarDiv.className = 'message-avatar';
+                avatarDiv.innerHTML = '<i data-lucide="database"></i>';
+                
+                const contentDiv = document.createElement('div');
+                contentDiv.className = 'message-content';
+                contentDiv.style.fontSize = '0.8rem';
+                contentDiv.style.opacity = '0.8';
+                contentDiv.innerHTML = `
+                    <i data-lucide="info"></i> 
+                    ${count}件のオープンデータを参照しました
+                `;
+                
+                messageDiv.appendChild(avatarDiv);
+                messageDiv.appendChild(contentDiv);
+                this.messagesContainer.appendChild(messageDiv);
+                lucide.createIcons();
+                this.scrollToBottom();
+            }
+            
+            setLoading(loading) {
+                this.isLoading = loading;
+                this.sendButton.disabled = loading;
+                this.messageInput.disabled = loading;
+                
+                if (loading) {
+                    this.sendButton.innerHTML = '<i data-lucide="loader-2" class="animate-spin"></i> <span>送信中</span>';
+                } else {
+                    this.sendButton.innerHTML = '<i data-lucide="send"></i> <span>送信</span>';
+                }
+                lucide.createIcons();
+            }
+            
+            scrollToBottom() {
+                this.messagesContainer.scrollTop = this.messagesContainer.scrollHeight;
+            }
+        }
+        
+        function sendExample(question) {
+            const chat = window.kanazawaChat;
+            if (chat && !chat.isLoading) {
+                chat.messageInput.value = question;
+                chat.sendMessage();
+            }
+        }
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            window.kanazawaChat = new KanazawaAIChat();
+        });
+    </script>
+</body>
+</html> 

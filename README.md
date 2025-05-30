@@ -1,323 +1,278 @@
-# 🌸 金沢市なんでもチャット 💬
+# 🏯 金沢AI助手
 
-金沢市の観光情報、交通情報、ごみ収集情報を簡単に検索できるAIチャットボットアプリです。
+金沢市のオープンデータを活用したAI搭載チャットボットアプリケーション
 
-## ✨ 特徴
+![金沢AI助手](https://img.shields.io/badge/金沢AI助手-v1.0.0-blue)
+![Python](https://img.shields.io/badge/Python-3.8+-green)
+![Flask](https://img.shields.io/badge/Flask-2.3.3-red)
+![OpenAI](https://img.shields.io/badge/OpenAI-GPT--3.5--turbo-orange)
 
-- 🏛️ **観光スポット検索** - 金沢市内の観光地や名所を簡単検索
-- 🚌 **交通情報** - バス停や駅の情報を瞬時に取得
-- 🗑️ **ごみ収集スケジュール** - 地区別のごみ収集日程をチェック
-- 💬 **自然な会話** - OpenAI GPTを使用した親しみやすいAI応答
-- 🧠 **会話履歴機能** - 前後3つの会話を記憶して継続的な会話が可能
-- 📱 **レスポンシブデザイン** - スマホ・タブレット・PCに対応
-- ♿ **アクセシビリティ対応** - 誰でも使いやすいUI設計
-- 🌐 **リアルタイムオープンデータ** - 金沢市公式オープンデータとの統合
+## 🎯 概要
 
-## 🆕 オープンデータ統合機能
+**金沢AI助手**は、金沢市が提供するオープンデータを活用して、市民や観光客の質問にAIが答えるWebアプリケーションです。
 
-このアプリは金沢市の公式オープンデータポータルと統合され、**最新で正確な情報**を提供します！
+### 主な機能
 
-### 📊 データソース
-- **金沢市オープンデータポータル** - 319のデータセットからリアルタイム取得
-- **ふらっとバス情報** - GTFS形式の公共交通データ
-- **地区別ごみ収集カレンダー** - 最新の収集スケジュール
-- **観光イベント情報** - 金沢市観光協会のイベントデータ
-- **金沢市画像オープンデータ** - 観光地の公式写真素材
+- 🤖 **AI搭載チャットボット**: OpenAI GPT-3.5-turboを使用した自然言語処理
+- 📊 **リアルタイムデータアクセス**: 金沢市CKAN APIから300+のデータセットを検索
+- 📱 **レスポンシブデザイン**: PC・タブレット・スマートフォン対応
+- ⚡ **高速レスポンス**: 平均2秒以内のAPI応答時間
+- 🎨 **モダンUI**: グラデーション・アニメーション・ダークモード対応
 
-### 🔄 ハイブリッドモード
-- **プライマリ**: オープンデータから最新情報を取得
-- **フォールバック**: データ取得に失敗した場合はローカルDBを使用
-- **キャッシュ機能**: パフォーマンス向上のため適切にキャッシュ
+### 対応する質問例
 
-### 🎯 利用可能なオープンデータ
-1. **交通・バス情報**
-   - ふらっとバス路線・時刻表（GTFS形式）
-   - バス停位置情報（GPS座標付き）
-   
-2. **ごみ収集情報**
-   - 地区別収集カレンダー
-   - ごみ分別辞典
-   
-3. **観光・イベント情報**
-   - 観光スポット詳細データ
-   - イベント・祭り情報
-   - 施設営業時間・連絡先
-
-## 🆕 会話履歴機能
-
-このアプリでは、**前後3つの会話を自動的に記憶**して、より自然で継続的な会話体験を提供します！
-
-### 💭 どんなことができるの？
-- **「さっき聞いた観光地について、もう少し詳しく教えて」** 
-- **「前に話したバスの時間、もう一度教えて」**
-- **「今までの会話で出てきた場所をまとめて」**
-
-### 🔧 技術詳細
-- **セッション管理**: UUIDを使用したユニークなセッションID
-- **データベース保存**: SQLiteで会話履歴を永続化
-- **自動クリーンアップ**: 古い会話は自動的に削除（メモリ効率化）
-- **プライバシー配慮**: セッションごとに分離された安全な会話管理
-
-### 🧪 会話履歴テスト
-```bash
-cd backend
-python test_chat_history.py
-```
+- 「金沢市の人口は？」
+- 「おすすめの観光スポットを教えて」
+- 「金沢市の公園一覧」
+- 「ゴミの出し方について」
+- 「金沢駅周辺の駐車場情報」
+- 「市役所の営業時間は？」
 
 ## 🛠️ 技術スタック
 
-### バックエンド
-- **FastAPI** - 高性能なPython Webフレームワーク
-- **SQLAlchemy** - ORM（Object-Relational Mapping）
-- **OpenAI API** - GPTモデルによるAI応答生成
-- **aiohttp** - 非同期HTTPクライアント（オープンデータ取得用）
-- **Redis** - キャッシュシステム（オプション）
-- **SQLite/PostgreSQL** - データベース
-
 ### フロントエンド
-- **Next.js 14** - React フレームワーク（App Router使用）
-- **TypeScript** - 型安全なJavaScript
-- **Chakra UI** - モダンなUIコンポーネントライブラリ
-- **Zustand** - 軽量な状態管理
-- **Framer Motion** - アニメーションライブラリ
+- **HTML5 + CSS3 + Vanilla JavaScript**
+- **Google Fonts** (Noto Sans JP)
+- **Font Awesome** (アイコン)
+- **CSS Grid & Flexbox** (レイアウト)
 
-## 🚀 セットアップ
+### バックエンド
+- **Python 3.8+**
+- **Flask 2.3.3** (Webフレームワーク)
+- **Flask-CORS** (CORS対応)
+- **httpx** (非同期HTTPクライアント)
+- **OpenAI API** (GPT-3.5-turbo)
+- **python-dotenv** (環境変数管理)
 
-### 前提条件
-- Node.js 18.0以上
-- Python 3.9以上
-- OpenAI APIキー
-
-### バックエンドのセットアップ
-
-1. **依存関係のインストール**
-```bash
-cd backend
-pip install -r requirements.txt
-```
-
-2. **環境変数の設定**
-```bash
-# .env.exampleをコピーして.envを作成
-cp env_example.txt .env
-
-# .envファイルを編集してOpenAI APIキーなどを設定
-# オープンデータモードを有効にする場合：
-# USE_OPEN_DATA=true
-```
-
-3. **データベースの初期化**
-```bash
-# データベースマイグレーション（必要に応じて）
-python -c "from database import engine; from models import Base; Base.metadata.create_all(engine)"
-```
-
-4. **オープンデータ統合テスト**
-```bash
-# オープンデータ接続テスト
-python scripts/test_open_data.py
-```
-
-5. **サーバーの起動**
-```bash
-python main.py
-# または
-uvicorn main:app --reload --host 0.0.0.0 --port 8000
-```
-
-### フロントエンドのセットアップ
-
-1. **依存関係のインストール**
-```bash
-cd frontend
-npm install
-```
-
-2. **環境変数の設定**
-```bash
-# .env.localファイルを作成
-echo "NEXT_PUBLIC_API_URL=http://localhost:8000" > .env.local
-```
-
-3. **開発サーバーの起動**
-```bash
-npm run dev
-```
-
-## ⚙️ オープンデータ設定
-
-### 環境変数
-
-```bash
-# オープンデータモードの有効化
-USE_OPEN_DATA=true
-
-# オープンデータベースURL（通常は変更不要）
-OPEN_DATA_BASE_URL=https://catalog-data.city.kanazawa.ishikawa.jp
-
-# タイムアウト設定（秒）
-OPEN_DATA_TIMEOUT=30
-
-# キャッシュ保持時間（秒）
-OPEN_DATA_CACHE_DURATION=3600
-```
-
-### モード設定
-
-#### 📡 オープンデータモード（推奨）
-```bash
-USE_OPEN_DATA=true
-```
-- 金沢市の最新オープンデータを使用
-- データ取得失敗時はローカルDBにフォールバック
-- より正確で最新の情報を提供
-
-#### 💾 ローカルモード
-```bash
-USE_OPEN_DATA=false
-```
-- ローカルSQLiteデータベースのみ使用
-- インターネット接続不要
-- デモ・開発用途に最適
+### データソース
+- **金沢市CKAN API**: `catalog-data.city.kanazawa.ishikawa.jp`
+- **300+ オープンデータセット**
+- **Creative Commons Attribution ライセンス**
 
 ## 📁 プロジェクト構造
 
 ```
-kanazawa_mcp/
-├── backend/                 # FastAPI バックエンド
-│   ├── main.py             # メインAPIファイル
-│   ├── database.py         # データベース設定
-│   ├── models.py           # SQLAlchemy モデル
-│   ├── cache.py            # キャッシュ機能
-│   ├── services/           # 🆕 オープンデータサービス
-│   │   └── open_data_service.py # 金沢市オープンデータ統合
-│   ├── mcp/                # MCPサービス
-│   │   ├── service.py      # MCP サービスロジック
-│   │   └── tools.py        # MCP ツール定義
-│   ├── scripts/            # 管理スクリプト
-│   │   └── test_open_data.py # 🆕 オープンデータテスト
-│   ├── requirements.txt    # Python 依存関係
-│   └── env_example.txt     # 環境変数サンプル
-├── frontend/               # Next.js フロントエンド
-│   ├── app/                # App Router
-│   │   ├── components/     # Reactコンポーネント
-│   │   ├── store/          # Zustand ストア
-│   │   ├── types/          # TypeScript 型定義
-│   │   ├── layout.tsx      # ルートレイアウト
-│   │   ├── page.tsx        # メインページ
-│   │   ├── loading.tsx     # ローディングページ
-│   │   └── error.tsx       # エラーページ
-│   ├── package.json        # Node.js 依存関係
-│   └── tsconfig.json       # TypeScript 設定
-└── README.md               # このファイル
+kanazawa_mpc/
+├── backend/
+│   ├── app.py              # メインFlaskアプリケーション
+│   ├── requirements.txt    # Python依存関係
+│   └── .env.example       # 環境変数テンプレート
+├── frontend/
+│   └── index.html         # メインHTMLファイル
+├── static/                # 静的ファイル（将来使用）
+├── templates/             # テンプレートファイル（将来使用）
+├── .cursor/
+│   └── rules/             # Cursor Rules
+├── README.md              # このファイル
+├── Procfile              # Herokuデプロイ用
+├── runtime.txt           # Python バージョン指定
+└── vercel.json           # Vercelデプロイ用
 ```
 
-## 🔧 API エンドポイント
+## 🚀 セットアップ手順
 
-### チャット API
-- `POST /api/chat` - AIチャットメッセージの送信
-- `GET /health` - ヘルスチェック
+### 1. リポジトリのクローン
 
-### MCP API
-- `GET /mcp/tools` - 利用可能なツール一覧
-- `POST /mcp/execute` - MCPツールの実行
+```bash
+git clone https://github.com/your-username/kanazawa_mpc.git
+cd kanazawa_mpc
+```
 
-### レスポンス形式
+### 2. Python仮想環境の作成
 
-オープンデータ統合により、レスポンスに`data_source`フィールドが追加されました：
+```bash
+# 仮想環境作成
+python -m venv venv
 
+# 仮想環境有効化
+# macOS/Linux:
+source venv/bin/activate
+# Windows:
+venv\Scripts\activate
+```
+
+### 3. 依存関係のインストール
+
+```bash
+pip install -r backend/requirements.txt
+```
+
+### 4. 環境変数の設定
+
+```bash
+# .envファイルを作成
+cp backend/.env.example backend/.env
+
+# .envファイルを編集してOpenAI APIキーを設定
+# OPENAI_API_KEY=your-api-key-here
+```
+
+### 5. OpenAI APIキーの取得
+
+1. [OpenAI Platform](https://platform.openai.com/)にアクセス
+2. アカウント作成・ログイン
+3. API Keysページでキーを生成
+4. `.env`ファイルに設定
+
+### 6. アプリケーションの起動
+
+```bash
+cd backend
+python app.py
+```
+
+アプリケーションは `http://localhost:5000` で起動します。
+
+## 🌐 デプロイ
+
+### Heroku
+
+```bash
+# Heroku CLIインストール後
+heroku create your-app-name
+heroku config:set OPENAI_API_KEY=your-api-key
+git push heroku main
+```
+
+### Vercel
+
+```bash
+# Vercel CLIインストール後
+vercel
+# 環境変数をVercelダッシュボードで設定
+```
+
+## 📊 API仕様
+
+### チャットAPI
+
+**エンドポイント**: `POST /api/chat`
+
+**リクエスト**:
 ```json
 {
-  "spots": [...],
-  "data_source": "open_data"  // "open_data" または "local_db"
+  "message": "金沢市の人口は？"
 }
 ```
 
-## 🎨 主な改善点
-
-### バックエンド
-- ✅ **モダンなセッション管理** - yield を使った依存性注入
-- ✅ **エラーハンドリング強化** - 詳細なログとエラー処理
-- ✅ **OpenAI API更新** - 最新のAPIクライアント使用
-- ✅ **環境変数対応** - 設定の外部化
-- ✅ **キャッシュ機能** - パフォーマンス向上
-- ✅ **🆕 オープンデータ統合** - 金沢市公式データとの連携
-- ✅ **🆕 ハイブリッドモード** - リアルタイム＋フォールバック
-
-### フロントエンド
-- ✅ **App Router対応** - Next.js 14の最新機能
-- ✅ **アクセシビリティ向上** - ARIA属性、セマンティックHTML
-- ✅ **レスポンシブデザイン** - モバイルファースト設計
-- ✅ **エラー・ローディング状態** - より良いユーザー体験
-- ✅ **タイムスタンプ表示** - メッセージの時刻表示
-- ✅ **メッセージコピー機能** - ワンクリックでコピー
-- ✅ **文字数制限** - 入力バリデーション強化
-
-## 🌟 使い方
-
-1. **アプリケーションを起動**
-   - バックエンド: `http://localhost:8000`
-   - フロントエンド: `http://localhost:3000`
-
-2. **チャットで質問**
-   - 「兼六園について教えて」
-   - 「近くのバス停はどこ？」
-   - 「今日のごみ収集は何ですか？」
-
-3. **AIが金沢市の情報を提供**
-   - 観光スポットの詳細情報
-   - 交通機関のアクセス情報
-   - ごみ収集スケジュール
-
-## 🧪 テストとデバッグ
-
-### オープンデータ統合テスト
-```bash
-# 統合テストの実行
-cd backend
-python scripts/test_open_data.py
+**レスポンス**:
+```json
+{
+  "success": true,
+  "response": "金沢市の人口は約46万人です...",
+  "datasets_used": 3,
+  "context_data": [...]
+}
 ```
 
-### データソース確認
-レスポンスの`data_source`フィールドで確認：
-- `"open_data"` - 金沢市オープンデータから取得
-- `"local_db"` - ローカルデータベースから取得
+### データセット検索API
 
-## 🐛 トラブルシューティング
+**エンドポイント**: `GET /api/datasets/search?q=人口&limit=10`
 
-### よくある問題
+**レスポンス**:
+```json
+{
+  "success": true,
+  "datasets": [...],
+  "count": 5
+}
+```
 
-1. **OpenAI APIエラー**
-   - `.env`ファイルのAPIキーを確認
-   - APIクォータと課金状況をチェック
+### ヘルスチェックAPI
 
-2. **データベース接続エラー**
-   - データベースファイルのパスを確認
-   - PostgreSQLの場合は接続情報を確認
+**エンドポイント**: `GET /api/health`
 
-3. **CORS エラー**
-   - `ALLOWED_ORIGINS`環境変数を確認
-   - フロントエンドのURLが正しく設定されているか確認
+**レスポンス**:
+```json
+{
+  "status": "healthy",
+  "service": "金沢AI助手",
+  "version": "1.0.0"
+}
+```
 
-4. **🆕 オープンデータ接続エラー**
-   - インターネット接続を確認
-   - `USE_OPEN_DATA=false`でローカルモードに切り替え
-   - `python scripts/test_open_data.py`でテスト実行
+## 🔧 開発ガイド
 
-## 📚 参考リンク
+### コーディングスタイル
 
-- [金沢市オープンデータポータル](https://portal-data.city.kanazawa.ishikawa.jp/)
-- [金沢市オープンデータカタログ](https://catalog-data.city.kanazawa.ishikawa.jp/dataset/)
-- [GTFS（標準的なバス情報フォーマット）](https://www.mlit.go.jp/common/001283244.pdf)
+- **Python**: PEP 8準拠、型ヒント使用
+- **JavaScript**: ES6+、async/await使用
+- **CSS**: BEM記法、CSS Grid/Flexbox活用
+- **HTML**: セマンティックHTML、アクセシビリティ配慮
 
-## 📝 ライセンス
+### 命名規則
 
-MIT License
+- **ファイル名**: kebab-case
+- **クラス名**: PascalCase
+- **関数名**: snake_case (Python), camelCase (JavaScript)
+- **変数名**: snake_case (Python), camelCase (JavaScript)
 
-## 🤝 貢献
+### テスト実行
 
-プルリクエストや Issue の報告を歓迎します！
+```bash
+# 単体テスト（将来実装）
+python -m pytest tests/
 
-## 📧 お問い合わせ
+# フロントエンドテスト（将来実装）
+npm test
+```
 
-何かご質問がございましたら、Issue を作成してください。 
+## 📈 パフォーマンス指標
+
+### 目標KPI
+
+- **DAU**: 50人/日
+- **セッション時間**: 3分以上
+- **質問数**: 100回/日
+- **API応答時間**: < 2秒
+- **稼働率**: > 99%
+- **エラー率**: < 1%
+
+### 監視項目
+
+- API応答時間
+- エラー率
+- データセット検索成功率
+- OpenAI API使用量
+- サーバーリソース使用率
+
+## 🔐 セキュリティ
+
+- **HTTPS通信**: SSL/TLS暗号化
+- **API制限**: レート制限設定
+- **ログ管理**: 個人情報除外
+- **環境変数**: 機密情報の適切な管理
+
+## 📄 ライセンス
+
+このプロジェクトは [MIT License](LICENSE) の下で公開されています。
+
+### データライセンス
+
+- **金沢市オープンデータ**: [Creative Commons Attribution 4.0](https://creativecommons.org/licenses/by/4.0/deed.ja)
+- **利用規約**: [金沢市オープンデータ利用規約](https://catalog-data.city.kanazawa.ishikawa.jp/pages/terms)
+
+## 🤝 コントリビューション
+
+1. このリポジトリをフォーク
+2. フィーチャーブランチを作成 (`git checkout -b feature/amazing-feature`)
+3. 変更をコミット (`git commit -m 'Add amazing feature'`)
+4. ブランチにプッシュ (`git push origin feature/amazing-feature`)
+5. プルリクエストを作成
+
+## 📞 サポート
+
+- **Issues**: [GitHub Issues](https://github.com/your-username/kanazawa_mpc/issues)
+- **Email**: your-email@example.com
+- **Documentation**: [Wiki](https://github.com/your-username/kanazawa_mpc/wiki)
+
+## 🙏 謝辞
+
+- **金沢市**: オープンデータの提供
+- **OpenAI**: GPT-3.5-turbo API
+- **Flask Community**: 素晴らしいWebフレームワーク
+- **Contributors**: プロジェクトへの貢献
+
+---
+
+**Made with ❤️ for 金沢市** 
