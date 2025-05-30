@@ -611,6 +611,7 @@
                 <div class="welcome">
                     <h3>👋 こんにちは！</h3>
                     <p>金沢市のオープンデータを活用して、観光情報や行政サービス、統計データなど様々な質問にお答えします。</p>
+                    <p>🚀 <strong>NEW!</strong> ビジネス関連の質問では、AI搭載のビジネスインテリジェンス機能が自動で市場分析・競合分析・マーケティング戦略を提案します！</p>
                     
                     <div class="examples">
                         <div class="example" onclick="sendExample('金沢市の人口は？')">
@@ -636,6 +637,30 @@
                                 <i data-lucide="recycle"></i>
                             </div>
                             <div class="example-text">ゴミの出し方について</div>
+                        </div>
+                        <div class="example" onclick="sendExample('金沢でカフェを開業したいのですが、どんなビジネス機会がありますか？')">
+                            <div class="example-icon">
+                                <i data-lucide="coffee"></i>
+                            </div>
+                            <div class="example-text">カフェ開業のビジネス機会</div>
+                        </div>
+                        <div class="example" onclick="sendExample('金沢で観光業を始めたいです。市場分析をお願いします')">
+                            <div class="example-icon">
+                                <i data-lucide="trending-up"></i>
+                            </div>
+                            <div class="example-text">観光業の市場分析</div>
+                        </div>
+                        <div class="example" onclick="sendExample('金沢でIT企業を起業する場合のマーケティング戦略を教えて')">
+                            <div class="example-icon">
+                                <i data-lucide="laptop"></i>
+                            </div>
+                            <div class="example-text">IT企業のマーケティング戦略</div>
+                        </div>
+                        <div class="example" onclick="sendExample('金沢で飲食店を開くなら、どのエリアがおすすめですか？')">
+                            <div class="example-icon">
+                                <i data-lucide="utensils"></i>
+                            </div>
+                            <div class="example-text">飲食店開業エリア分析</div>
                         </div>
                     </div>
                 </div>
@@ -706,7 +731,7 @@
                 const loadingMessage = this.addLoadingMessage();
                 
                 try {
-                    const response = await fetch('/api/chat', {
+                    const response = await fetch('http://localhost:5001/api/chat', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',

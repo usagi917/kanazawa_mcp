@@ -5,7 +5,6 @@
 ![金沢AI助手](https://img.shields.io/badge/金沢AI助手-v1.0.0-blue)
 ![Python](https://img.shields.io/badge/Python-3.8+-green)
 ![Flask](https://img.shields.io/badge/Flask-2.3.3-red)
-![OpenAI](https://img.shields.io/badge/OpenAI-GPT--3.5--turbo-orange)
 
 ## 🎯 概要
 
